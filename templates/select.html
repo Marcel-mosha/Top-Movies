@@ -3,15 +3,82 @@
 {% block title %}Select Movie{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="heading">Select Movie</h1>
-     {% for movie in choices %}
-  <p>
+<div class="container my-5 min-vh-80">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 h-100">
+        <!-- Card Header -->
+        <div class="card-header bg-white border-bottom-0 py-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0 fw-bold">
+              <i class="fas fa-search me-2 text-primary"></i>Select Movie
+            </h2>
+            <a href="{{ url_for('add_movie') }}" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-arrow-left me-1"></i>Back to Search
+            </a>
+          </div>
+          <p class="text-muted mb-0 mt-2">Search results from TMDB</p>
+        </div>
 
-    <a href="{{url_for('find_movie', id=movie.id)}}"> {{movie.title}} - {{movie.release_date}}</a>
+        <!-- Card Body -->
+        <div class="card-body p-0">
+          {% if choices %}
+            <div class="list-group list-group-flush">
+              {% for movie in choices %}
+                <a href="{{url_for('find_movie', id=movie.id)}}" class="list-group-item list-group-item-action py-3 px-4">
+                  <div class="d-flex align-items-center">
+                    {% if movie.poster_path %}
+                    <img src="https://image.tmdb.org/t/p/w92/{{ movie.poster_path }}"
+                         alt="{{ movie.title }} poster"
+                         class="img-thumbnail me-3"
+                         style="width: 60px; height: 90px; object-fit: cover;">
+                    {% else %}
+                    <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center"
+                         style="width: 60px; height: 90px; background-color: #f8f9fa;">
+                      <i class="fas fa-film text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="mb-1">{{ movie.title }}</h5>
+                        <small class="text-muted ms-2">{{ movie.release_date[:4] if movie.release_date else 'N/A' }}</small>
+                      </div>
+                      {% if movie.overview %}
+                        <p class="mb-1 text-muted small">{{ movie.overview|truncate(120) }}</p>
+                      {% endif %}
+                      <div class="d-flex align-items-center mt-2">
+                        {% if movie.vote_average %}
+                        <span class="badge bg-warning text-dark me-2">
+                          <i class="fas fa-star me-1"></i>{{ movie.vote_average|round(1) }}
+                        </span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-5 my-3">
+              <i class="fas fa-search fa-4x text-muted mb-4 opacity-25"></i>
+              <h4 class="fw-bold">No Movies Found</h4>
+              <p class="text-muted mb-4">Try a different search term or check your spelling.</p>
+              <a href="{{ url_for('add_movie') }}" class="btn btn-primary px-4">
+                <i class="fas fa-redo me-2"></i>Try Again
+              </a>
+            </div>
+          {% endif %}
+        </div>
 
-  </p>
-     {% endfor %}
-
+        <!-- Card Footer -->
+        <div class="card-footer bg-white border-top-0 py-3 text-center">
+          <small class="text-muted">
+            <i class="fas fa-info-circle me-1"></i>
+            Powered by The Movie Database (TMDB) API
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
